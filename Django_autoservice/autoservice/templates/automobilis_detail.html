@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Automobilio detalės</h1>
+  <p>Valstybinis numeris: {{ car.license_plate }}</p>
+  <p>VIN kodas: {{ car.vin }}</p>
+  <p>Savininkas: {{ car.customer }}</p>
+  <p>Automobilio modelis: {{ car.car_model }}</p>
+  <a href="{% url 'automobiliai' %}">Atgal į sąrašą</a>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Auto servisas</h1>
+  <p>Sutvarkysime viska,kas nepatvarkoma</p>
+  <p>Šiuo metu turime:</p>
+  <ul>
+    <li><strong>Turime automobiliu:</strong> {{ sum_cars }}</li>
+    <li><strong>Turime paslaugu:</strong> {{ services }}</li>
+    <li><strong>Atliktu uzsakymu:</strong> {{ sum_order }}</li>
+  </ul>
+{% endblock %}

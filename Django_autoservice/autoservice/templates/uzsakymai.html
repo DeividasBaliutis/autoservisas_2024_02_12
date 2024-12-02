@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Užsakymai</h1>
+  <p>Visų užsakymų sąrašas.</p>
+  <ul>
+    {% for order in orders %}
+      <li>
+        <a href="{% url 'order_detail' order_id=order.id %}">
+          Užsakymas {{ order.id }} - Statusas: {{ order.get_status_display }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

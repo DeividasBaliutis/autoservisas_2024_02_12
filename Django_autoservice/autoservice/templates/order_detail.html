@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Užsakymo detalės</h1>
+  <p>Užsakymas: {{ order.id }}</p>
+  <p>Statusas: {{ order.get_status_display }}</p>
+  <p>Data: {{ order.date }}</p>
+
+  <h3>Užsakymo eilutės</h3>
+  <ul>
+    {% for line in order_lines %}
+      <li>{{ line.service.name }} - Kiekis: {{ line.quantity }} - Kaina: {{ line.service.price }} EUR</li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

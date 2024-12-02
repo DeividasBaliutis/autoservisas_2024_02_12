@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Automobiliai</h1>
+  <p>Remontuojamų automobilių sąrašas.</p>
+  <ul>
+    {% for a in automobiliai %}
+      <li>
+        <a href="{% url 'automobilis_detail' car_id=a.id %}">
+          {{ a.license_plate }} - {{ a.car_model }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
