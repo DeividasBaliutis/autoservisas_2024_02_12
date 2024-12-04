@@ -20,6 +20,7 @@ class Car(models.Model):
     vin = models.CharField('VIN kodas', max_length=50, help_text='Įveskite automobilio VIN kodą')
     customer = models.CharField('Kleintas', max_length=100, help_text='Įveskite kliento vardą arba pavadinimą')
     car_model = models.ForeignKey(CarModel, on_delete=models.SET_NULL, null=True, help_text='Pasirinkite automobilio modelį')
+    cover = models.ImageField('Nuotrauka', upload_to='covers', null=True)
 
     class Meta:
         verbose_name = 'Automobilis'

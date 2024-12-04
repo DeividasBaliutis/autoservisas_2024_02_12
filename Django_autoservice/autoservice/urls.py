@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -8,6 +8,9 @@ urlpatterns = [
     path('automobilis/<int:car_id>/', views.automobilis_detail, name='automobilis_detail'),
     path('uzsakymai/', views.OrderListView.as_view(), name='uzsakymai'),
     path('uzsakymas/<uuid:order_id>/', views.order_detail, name='order_detail'),
+    path('search/', views.search, name='search'),
+
+
 
 ]
 
