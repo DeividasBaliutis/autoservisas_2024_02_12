@@ -1,10 +1,16 @@
+from django.contrib.auth.models import User
+from datetime import date
 from django.db import models
 import uuid
+from tinymce.models import HTMLField
+from PIL import Image
 
 
 class CarModel(models.Model):
     make = models.CharField('Marke', max_length=100, help_text='Įveskite automobilio markę')
     model = models.CharField('Modelis', max_length=100, help_text='Įveskite automobilio modelį')
+
+
 
     class Meta:
         verbose_name = 'AutoModelis'
@@ -19,8 +25,10 @@ class Car(models.Model):
     license_plate = models.CharField('Valstybinis numeris', max_length=20, help_text='Įveskite automobilio valstybinį numerį')
     vin = models.CharField('VIN kodas', max_length=50, help_text='Įveskite automobilio VIN kodą')
     customer = models.CharField('Kleintas', max_length=100, help_text='Įveskite kliento vardą arba pavadinimą')
+    description = HTMLField('Aprašymas', blank=True, null=True, help_text="Įveskite automobilio modelio aprašymą")
     car_model = models.ForeignKey(CarModel, on_delete=models.SET_NULL, null=True, help_text='Pasirinkite automobilio modelį')
     cover = models.ImageField('Nuotrauka', upload_to='covers', null=True)
+
 
     class Meta:
         verbose_name = 'Automobilis'
@@ -34,6 +42,8 @@ class Service(models.Model):
     name = models.CharField('Paslauga', max_length=100, help_text='Įveskite paslaugos pavadinimą (pvz., Alyvos keitimas)')
     price = models.DecimalField('Kaina', max_digits=10, decimal_places=2, help_text='Įveskite paslaugos kainą (pvz., 50.00)')
 
+
+
     class Meta:
         verbose_name = 'Paslauga'
         verbose_name_plural = 'Paslaugos'
@@ -44,6 +54,13 @@ class Service(models.Model):
 
 class Order(models.Model):
 
+
+    @property
+    def is_overdue(self):
+        if self.return_date and date.today() > self.return_date:
+            return True
+        return False
+
     STATUS_CHOICES = [
         ('NEW', 'Naujas'),
         ('IN_PROGRESS', 'Vykdomas'),
@@ -52,7 +69,10 @@ class Order(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unikalus užsakymo ID')
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    return_date = models.DateField(null=True, blank=True)
     date = models.DateTimeField('Data', help_text='Įveskite užsakymo datą')
+    description = HTMLField('Aprašymas', blank=True, null=True, help_text="Įveskite automobilio modelio aprašymą")
     car = models.ForeignKey( Car, on_delete=models.SET_NULL, null=True, help_text='Pasirinkite automobilį, kuriam skirtas užsakymas')
     status = models.CharField(
         'Statusas',
@@ -83,3 +103,40 @@ class OrderLine(models.Model):
 
     def __str__(self):
         return f'{self.order} - {self.service} ({self.quantity} vnt.)'
+
+
+class OrderReview(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True, blank=True)
+    reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    content = models.TextField('Atsiliepimas', max_length=2000)
+
+    class Meta:
+        verbose_name = "Atsiliepimas"
+        verbose_name_plural = 'Atsiliepimai'
+        ordering = ['-date_created']
+
+
+class Profilis(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nuotrauka = models.ImageField(default="profile_pics/default.png", upload_to="profile_pics")
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        img = Image.open(self.nuotrauka.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.nuotrauka.path)
+
+
+    class Meta:
+            verbose_name = "Profilis"
+            verbose_name_plural = 'Profiliai'
+
+    def __str__(self):
+        return f"{self.user.username} profilis"
+
+
+
+

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Mano užsakymai</h1>
+
+    {% if order_list %}
+    <ul>
+        {% for uzsakymas in order_list %}
+        <img class="rounded-circle" src="{{uzsakymas.customer.profilis.nuotrauka.url}}" width="100" height="75">
+        <li class="{% if uzsakymas.is_overdue %}text-danger{% endif %}">
+            <a href="{% url 'order_detail' order_id=uzsakymas.id %}">
+                Užsakymas (ID: {{ uzsakymas.id }}) - Automobilis: {{ uzsakymas.car.license_plate }} - Būsena: {{ uzsakymas.get_status_display }}
+            </a>
+            (Data: {{ uzsakymas.date }})
+            {% if uzsakymas.is_overdue %}
+                <span class="text-danger">(Pavėluotas grąžinimas)</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>Šiuo metu neturite pateiktų užsakymų.</p>
+    {% endif %}
+{% endblock %}

@@ -4,7 +4,11 @@
   <h1>Automobilio detalės</h1>
   <p>Valstybinis numeris: {{ car.license_plate }}</p>
   <p>VIN kodas: {{ car.vin }}</p>
-  <p>Savininkas: {{ car.customer }}</p>
+  <p>Klientas: {{ car.customer }}</p>
   <p>Automobilio modelis: {{ car.car_model }}</p>
+  <p><strong>Aprašymas:</strong></p>
+    <div>{{ car.description|safe }}</div> <!-- Atvaizduojame HTML, naudojant 'safe' filtrą -->
+</body>
+</html>
   <a href="{% url 'automobiliai' %}">Atgal į sąrašą</a>
 {% endblock %}
